@@ -9,17 +9,20 @@ This is a web application that recommends prebuilt gaming PCs from Amazon based 
 ## Tech Stack
 
 ### Frontend & Backend
+
 - **Next.js 16.1.1** - React framework that handles both frontend UI and backend API routes
 - **React 19** - JavaScript library for building the user interface
 - **TypeScript** - Adds type safety to JavaScript (catches errors before runtime)
 - **Tailwind CSS** - Utility-first CSS framework for styling
 
 ### External APIs
+
 - **Canopy API** - Third-party service that provides Amazon product search
   - Base URL: `https://rest.canopyapi.co`
   - Endpoint used: `/api/amazon/search`
 
 ### Development Tools
+
 - **Turbopack** - Fast bundler (development mode)
 - **ESLint** - Code linting
 - **Node.js** - JavaScript runtime
@@ -29,24 +32,30 @@ This is a web application that recommends prebuilt gaming PCs from Amazon based 
 ## Installation & Setup
 
 ### Prerequisites
+
 You need to have installed:
+
 - **Node.js** (version 18 or higher recommended)
 - **npm** (comes with Node.js)
 
 ### Steps to Get Started
 
 1. **Navigate to the project folder**
+
    ```bash
    cd c:\School\Projects\test\pc-recommender
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
+
    This reads `package.json` and installs all required packages into `node_modules/`
 
 3. **Set up environment variables**
+
    - The file `.env.local` already contains:
      ```
      CANOPY_API_KEY=
@@ -55,9 +64,11 @@ You need to have installed:
    - These are needed for the Canopy API to work
 
 4. **Run the development server**
+
    ```bash
    npm run dev
    ```
+
    - Server starts at: `http://localhost:3000`
    - Open this URL in your browser
 
@@ -108,6 +119,7 @@ pc-recommender/
 ## How It Works - Data Flow
 
 ### 1. User Fills Out Form
+
 **File:** `app/page.tsx` → renders `components/PCQuestionForm.tsx`
 
 - User selects **Budget** (e.g., "$700-$999")
@@ -116,6 +128,7 @@ pc-recommender/
 - Form redirects to `/results?budget=700-999&storage=1tb`
 
 ### 2. Results Page Loads
+
 **File:** `app/results/page.tsx`
 
 - Reads URL parameters (`budget` and `storage`)
@@ -123,6 +136,7 @@ pc-recommender/
 - Passes preferences to `ResultsClient` component
 
 ### 3. Client Fetches Recommendations
+
 **File:** `components/ResultsClient.tsx`
 
 - Makes a POST request to `/api/recommend` with user preferences
@@ -130,6 +144,7 @@ pc-recommender/
 - Shows results when data arrives
 
 ### 4. API Route Processes Request
+
 **File:** `app/api/recommend/route.ts`
 
 This is the backend logic that runs on the server:
@@ -160,6 +175,7 @@ Send recommendations to frontend
 ```
 
 ### 5. Display Results
+
 **File:** `components/PCCard.tsx`
 
 - Each recommendation is displayed as a card
@@ -171,6 +187,7 @@ Send recommendations to frontend
 ## Key Files Explained
 
 ### `types/pc.ts`
+
 **What it does:** Defines TypeScript types for the entire app
 
 ```typescript
@@ -191,22 +208,23 @@ interface PcListing {
   title: string;
   url: string;
   priceUsd: number;
-  cpu?: string;        // e.g., "Ryzen 7 5800X"
-  gpu?: string;        // e.g., "RTX 4070"
-  ramGb?: number;      // e.g., 16
-  storageGb?: number;  // e.g., 1000
+  cpu?: string; // e.g., "Ryzen 7 5800X"
+  gpu?: string; // e.g., "RTX 4070"
+  ramGb?: number; // e.g., 16
+  storageGb?: number; // e.g., 1000
   // ... other fields
 }
 
 // A recommended PC with a performance score
 interface PcRecommendation {
   listing: PcListing;
-  score: number;       // 0-100, higher is better
-  reason: string;      // Why it's recommended
+  score: number; // 0-100, higher is better
+  reason: string; // Why it's recommended
 }
 ```
 
 ### `lib/canopyClient.ts`
+
 **What it does:** Handles communication with the Canopy API
 
 - `CanopyClient` class wraps API calls
@@ -214,27 +232,31 @@ interface PcRecommendation {
 - `getCanopyClientFromEnv()` reads API credentials from `.env.local`
 
 **Example usage:**
+
 ```typescript
 const client = getCanopyClientFromEnv();
 const results = await client.searchAmazon({
   searchTerm: "gaming desktop computer",
   minPrice: 700,
   maxPrice: 999,
-  limit: 50
+  limit: 50,
 });
 // Returns array of products with title, price, URL, etc.
 ```
 
 ### `lib/rank.ts`
+
 **What it does:** Filters and scores PC listings
 
 **Main functions:**
 
 1. **`strictMeetsRequirements(listing)`** - Checks if a listing has all required data
+
    - Must have: price, URL, CPU, RAM
    - Returns: `{ ok: true }` or `{ ok: false, reason: "..." }`
 
 2. **`recommendFromCandidates(candidates, prefs)`** - Main ranking logic
+
    - Filters by budget (with 12% tolerance)
    - Filters by storage requirement
    - Scores based on:
@@ -250,6 +272,7 @@ const results = await client.searchAmazon({
    - `inferRamScore(ramGb)` - Scores RAM based on size
 
 ### `app/api/recommend/route.ts`
+
 **What it does:** Backend API route that Next.js serves
 
 - Receives POST request with `UserPreferences`
@@ -259,6 +282,7 @@ const results = await client.searchAmazon({
 - Returns JSON response with recommendations
 
 **Title parsing example:**
+
 ```
 Title: "Skytech Gaming PC AMD Ryzen 7 5800X RTX 4070 16GB DDR4 1TB NVMe SSD"
        ↓
@@ -270,6 +294,7 @@ Extracted:
 ```
 
 ### `components/PCQuestionForm.tsx`
+
 **What it does:** Interactive form component
 
 - Two dropdown menus (Budget, Storage)
@@ -278,6 +303,7 @@ Extracted:
 - Client-side component (`"use client"`)
 
 ### `components/ResultsClient.tsx`
+
 **What it does:** Fetches and displays recommendations
 
 - Uses `useEffect` to fetch data when component loads
@@ -287,6 +313,7 @@ Extracted:
 - Maps each recommendation to a `PCCard` component
 
 ### `components/PCCard.tsx`
+
 **What it does:** Displays one PC recommendation
 
 - Shows product image
@@ -300,17 +327,21 @@ Extracted:
 ## How to Make Changes
 
 ### Change the Questions
+
 1. **Add/remove questions:** Edit `components/PCQuestionForm.tsx`
 2. **Add new preference type:** Update `types/pc.ts` → add to `UserPreferences`
 3. **Update filtering:** Edit `lib/rank.ts` → add filter in `recommendFromCandidates()`
 
 ### Change Styling
+
 1. **Global styles:** Edit `app/layout.tsx` (fonts, colors)
 2. **Component styles:** Edit Tailwind classes directly in component files
 3. **Tailwind config:** Edit `tailwind.config.ts` for custom colors/spacing
 
 ### Change Ranking Algorithm
+
 1. **Edit weights:** Go to `lib/rank.ts` → change `weights` object
+
    ```typescript
    const weights = { cpu: 0.4, gpu: 0.4, ram: 0.2 };
    // Example: make GPU more important
@@ -325,6 +356,7 @@ Extracted:
    ```
 
 ### Change Search Term
+
 1. **Edit:** `app/api/recommend/route.ts`
    ```typescript
    searchTerm: "gaming desktop computer",
@@ -333,6 +365,7 @@ Extracted:
    ```
 
 ### Add New API Endpoint
+
 1. Create folder in `app/api/` (e.g., `app/api/myendpoint/`)
 2. Create `route.ts` file
 3. Export `GET()` or `POST()` function
@@ -348,28 +381,36 @@ Extracted:
 ## Common Issues & Solutions
 
 ### "Using mock data" warning appears
+
 **Problem:** Canopy API key not configured properly
-**Solution:** 
+**Solution:**
+
 1. Check `.env.local` exists with `CANOPY_API_KEY` and `CANOPY_BASE_URL`
 2. Restart dev server: `Ctrl+C` then `npm run dev`
 
 ### No results showing
+
 **Problem:** API call failed or no products match criteria
 **Solution:**
+
 1. Open browser DevTools (F12) → Console tab
 2. Look for error messages
 3. Check Network tab for failed requests
 
 ### TypeScript errors
+
 **Problem:** Type mismatch
 **Solution:**
+
 1. Check `types/pc.ts` for correct type definitions
 2. Make sure interfaces match between files
 3. Run `npm run build` to see all TypeScript errors
 
 ### Port 3000 already in use
+
 **Problem:** Another app is using port 3000
 **Solution:**
+
 1. Kill the other process
 2. Or change port: `npm run dev -- -p 3001`
 
@@ -382,11 +423,13 @@ Extracted:
 In Next.js 13+, components are **Server Components** by default (run on server, send HTML to browser).
 
 **Server Components:**
+
 - `app/page.tsx` - Runs on server
 - Can access database, file system, environment variables
 - Cannot use browser APIs, useState, useEffect
 
 **Client Components:**
+
 - Have `"use client"` at the top
 - `components/PCQuestionForm.tsx` - Runs in browser
 - Can use useState, useEffect, onClick handlers
@@ -395,6 +438,7 @@ In Next.js 13+, components are **Server Components** by default (run on server, 
 ### What is an API Route?
 
 Files in `app/api/` become backend endpoints:
+
 - `app/api/recommend/route.ts` → accessible at `/api/recommend`
 - Runs on the server (Node.js)
 - Can access environment variables, make external API calls
@@ -403,6 +447,7 @@ Files in `app/api/` become backend endpoints:
 ### What are URL Search Parameters?
 
 The `?budget=700-999&storage=1tb` part of the URL:
+
 - Next.js automatically parses these
 - Accessible via `searchParams` in page components
 - Used to pass data between pages without forms
@@ -412,6 +457,7 @@ The `?budget=700-999&storage=1tb` part of the URL:
 ## Next Steps / Future Enhancements
 
 Possible features to add:
+
 1. **More filters:** Add RAM, GPU, or brand preferences
 2. **Comparison mode:** Compare 2-3 PCs side-by-side
 3. **Save favorites:** Let users bookmark PCs
@@ -434,6 +480,7 @@ Possible features to add:
 ## Questions?
 
 If you're stuck:
+
 1. Check the browser console for errors (F12 → Console)
 2. Check the terminal where `npm run dev` is running
 3. Read error messages carefully - they often explain what's wrong
