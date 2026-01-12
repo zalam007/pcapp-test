@@ -29,89 +29,57 @@ This is a web application that recommends prebuilt gaming PCs from Amazon based 
 
 ---
 
-## Installation & Setup
+## Getting Started
 
-### Prerequisites
-
-You need to have installed:
-
-- **Node.js** (version 18 or higher recommended)
-- **npm** (comes with Node.js)
-
-### Steps to Get Started
-
-1. **Navigate to the project folder**
-
-   ```bash
-   cd c:\School\Projects\test\pc-recommender
-   ```
-
-2. **Install dependencies**
-
-   ```bash
-   npm install
-   ```
-
-   This reads `package.json` and installs all required packages into `node_modules/`
-
-3. **Set up environment variables**
-
-   - The file `.env.local` already contains:
-     ```
-     CANOPY_API_KEY=
-     CANOPY_BASE_URL=https://rest.canopyapi.co
-     ```
-   - These are needed for the Canopy API to work
-
-4. **Run the development server**
-
-   ```bash
-   npm run dev
-   ```
-
-   - Server starts at: `http://localhost:3000`
-   - Open this URL in your browser
-
-5. **Build for production** (optional)
-   ```bash
-   npm run build
-   npm start
-   ```
+📖 **New to the project?** See [INSTALLATION.md](INSTALLATION.md) for setup instructions.
 
 ---
 
 ## Project Structure
 
 ```
-pc-recommender/
+test/
 ├── app/                          # Next.js App Router pages
-│   ├── layout.tsx               # Root layout (wraps all pages)
-│   ├── page.tsx                 # Home page (questionnaire form)
+│   ├── api/                     # Backend API routes
+│   │   └── recommend/
+│   │       └── route.ts        # API endpoint that calls Canopy
 │   ├── results/
 │   │   └── page.tsx            # Results page (shows recommendations)
-│   └── api/
-│       └── recommend/
-│           └── route.ts        # API endpoint that calls Canopy
+│   ├── favicon.ico             # Site favicon
+│   ├── globals.css             # Global styles
+│   ├── layout.tsx              # Root layout (wraps all pages)
+│   └── page.tsx                # Home page (questionnaire form)
 │
 ├── components/                   # Reusable React components
-│   ├── PCQuestionForm.tsx       # Form with budget & storage questions
-│   ├── ResultsClient.tsx        # Client component that fetches recommendations
-│   └── PCCard.tsx              # Card displaying one PC recommendation
+│   ├── PCCard.tsx              # Card displaying one PC recommendation
+│   ├── PCQuestionForm.tsx      # Form with budget & storage questions
+│   └── ResultsClient.tsx       # Client component that fetches recommendations
+│
+├── docs/                        # Project documentation
+│   ├── INSTALLATION.md         # Setup instructions
+│   ├── MVP_PLAN.md             # Original MVP planning document
+│   ├── PROJECT_GUIDE.md        # This file - main documentation
+│   └── README.md               # Project overview
 │
 ├── lib/                         # Business logic & utilities
 │   ├── canopyClient.ts         # Wrapper for Canopy API calls
 │   └── rank.ts                 # Filtering & scoring logic for PCs
 │
+├── public/                      # Static assets (images, etc.)
+│
 ├── types/                       # TypeScript type definitions
 │   └── pc.ts                   # Types for user preferences & PC data
 │
-├── public/                      # Static assets (images, etc.)
 ├── .env.local                  # Environment variables (API keys)
-├── package.json                # Project dependencies & scripts
-├── tsconfig.json               # TypeScript configuration
-├── tailwind.config.ts          # Tailwind CSS configuration
+├── .gitignore                  # Git ignore rules
+├── eslint.config.mjs           # ESLint configuration
 ├── next.config.ts              # Next.js configuration
-└── README.md                   # Basic project info
+├── next-env.d.ts               # Next.js TypeScript declarations
+├── package.json                # Project dependencies & scripts
+├── package-lock.json           # Locked dependency versions
+├── postcss.config.mjs          # PostCSS configuration
+├── tailwind.config.ts          # Tailwind CSS configuration
+└── tsconfig.json               # TypeScript configuration
 ```
 
 ---
@@ -406,13 +374,7 @@ Extracted:
 2. Make sure interfaces match between files
 3. Run `npm run build` to see all TypeScript errors
 
-### Port 3000 already in use
-
-**Problem:** Another app is using port 3000
-**Solution:**
-
-1. Kill the other process
-2. Or change port: `npm run dev -- -p 3001`
+_For more troubleshooting, see [INSTALLATION.md](INSTALLATION.md)_
 
 ---
 
@@ -477,12 +439,3 @@ Possible features to add:
 
 ---
 
-## Questions?
-
-If you're stuck:
-
-1. Check the browser console for errors (F12 → Console)
-2. Check the terminal where `npm run dev` is running
-3. Read error messages carefully - they often explain what's wrong
-4. Google the error message
-5. Check Next.js documentation
