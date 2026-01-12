@@ -29,6 +29,12 @@ This is a web application that recommends prebuilt gaming PCs from Amazon based 
 
 ---
 
+## Getting Started
+
+📖 **New to the project?** See [INSTALLATION.md](INSTALLATION.md) for setup instructions.
+
+---
+
 ## Project Structure
 
 ```
@@ -432,4 +438,3 @@ Possible features to add:
 - **Tailwind CSS Docs:** https://tailwindcss.com/docs
 
 ---
-
